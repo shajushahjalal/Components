@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Component;
+namespace App\Http\Components\Traits;
 
 trait Message{
     
@@ -20,8 +20,12 @@ trait Message{
      */
     protected function output(){
         return [ 
-            'status' => $this->status, 'message' => $this->message, 'reset' => $this->reset,
-            'table' => $this->table, 'modal' => $this->modal, 'button' => $this->button
+            'status' => $this->status,
+            'message' => $this->message,
+            'reset' => $this->reset,
+            'table' => $this->table,
+            'modal' => $this->modal,
+            'button' => $this->button
         ];
     }
 
@@ -31,7 +35,7 @@ trait Message{
      */
     protected function success( $smg = null, $reset = true, $modal = true, $table = true, $button = false){
         $this->status = true;
-        $this->message = $smg == null ? !empty($this->message) ? $this->message : 'Information Save Successfully' : $smg ;
+        $this->message = $smg == null ? ( $this->message ?? 'Information Save Successfully') : $smg ;
         $this->reset = $reset;
         $this->modal = $modal;
         $this->table = $table;
@@ -45,7 +49,7 @@ trait Message{
      */
     protected function apiSuccess($message = Null, $data = Null){
         $this->status = true;
-        $this->message = !empty($message) ? $message : 'Successfully';
+        $this->message = !empty($message) ? ( $this->message ?? $message ) : 'Successfully';
         $this->data = $data;
     }
 
@@ -53,11 +57,17 @@ trait Message{
      * Return Default API Output Message
      * This Method for API Response
      */
-    protected function apiOutput(){
-        return [
-            'status'    => $this->status,       'message'   => $this->message,
-            'api_token' => $this->api_token,    'data'      => $this->data
+    protected function apiOutput($code = 200){
+        $content = [
+            'status'    => $this->status,
+            'message'   => $this->message,
+            'api_token' => $this->api_token,
+            'data'      => $this->data
         ];
+        if(empty($this->api_token)){
+            unset($content["api_token"]);
+        }
+        return response($content, $code);
     }
 
     /**
