@@ -19,15 +19,7 @@ trait FileUpload {
     /*
      * Define Directories
      */
-    protected  $productImageDir = "storage/uploads/productImage/";
-    protected  $logoImageDir = "storage/uploads/logo/";
-    protected  $sliderImageDir = "storage/uploads/slider/";
-    protected  $categoryImageDir = "storage/uploads/category/";
-    protected  $featureImageDir = "storage/uploads/feature/";
-    protected  $userImageDir    = "storage/uploads/users/";
-    protected  $contentImage    = "storage/uploads/pages/";
-    protected  $brandingImage    = "storage/uploads/brands/";
-
+    protected  $advisor_image = "storage/uploads/advisor/";
 
     /*
      * ---------------------------------------------
@@ -65,7 +57,7 @@ trait FileUpload {
      * the Image Orginal Ratio.
      * ---------------------------------------------
      */
-    protected function UploadImage($request,$fileName,$dir,$width,$height,$oldFile){
+    protected function UploadImage($request, $fileName, $dir, $width, $height, $oldFile){
         if(!$request->hasFile($fileName)){
             return $oldFile;
         }
@@ -85,7 +77,11 @@ trait FileUpload {
             Image::make($image)->resize($width,null,function($constant){
                 $constant->aspectRatio();
             })->save($path);
-        }else{
+        }
+        elseif( empty($height) && empty($width)){
+            Image::make($image)->save($path);
+        }
+        else{
             Image::make($image)->resize($width,$height)->save($path);
         }
         
@@ -136,6 +132,4 @@ trait FileUpload {
             return $allImage;
         }
     }
-    
-    
 }
